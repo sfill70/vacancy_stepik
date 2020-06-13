@@ -212,6 +212,18 @@ class ApplicationsView(View):
 
 
 class MyVacancyListView(ListView):
+    
+    def dispatch(self, request, *args, **kwargs):
+        company = ''
+        try:
+            company = Company.objects.all().get(owner=self.request.user)
+            # company = Company.get_user_company(self.request.user)
+        except:
+            pass
+        if not company:
+            return redirect('vacancy:add_company')
+        return super().dispatch(request, *args, **kwargs) 
+    
     model = Vacancy
     template_name = 'company/vacancy-list.html'
 
